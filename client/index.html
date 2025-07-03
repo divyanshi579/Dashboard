@@ -1384,7 +1384,7 @@
         weatherInfo.innerHTML = '<p>Loading weather...</p>';
 
         try {
-          const response = await fetch(`http://localhost:3001/api/weather?city=${city}`);
+          const response = await fetch(`/api/weather?city=${city}`);
           if (!response.ok) throw new Error('City not found. Please enter a valid city.');
         
           const data = await response.json();
@@ -1648,7 +1648,7 @@
           const loadingId = addChatMessage("Thinking...", 'ai');
     
              try {
-            const response = await fetch('http://localhost:3001/api/chat', {
+            const response = await fetch('/api/chat', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({ messages: chatHistory })
