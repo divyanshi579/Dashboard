@@ -97,7 +97,7 @@ const PORT = process.env.PORT || 3001;
 // Serve static frontend files from ../client
 app.use(express.static(path.join(__dirname, '../client')));
 
-// For any unmatched route, serve index.html (for SPA support or fallback)
+// For any unmatched route, serve index.html
 app.get('*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../client/index.html'));
 });
