@@ -98,7 +98,7 @@ const PORT = process.env.PORT || 3001;
 app.use(express.static(path.join(__dirname, '../client')));
 
 // For any unmatched route, serve index.html
-app.get('*', (req, res) => {
+app.get('/*', (req, res) => {
   res.sendFile(path.resolve(__dirname, '../client/index.html'));
 });
 
