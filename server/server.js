@@ -4,6 +4,7 @@ const cors = require('cors');
 const axios = require('axios');
 const rateLimit = require('express-rate-limit'); // ✅ add this
 const path = require('path');
+
 const app = express();
 const port = 3001;
 
@@ -95,14 +96,13 @@ app.post('/api/chat', async (req, res) => {
 const PORT = process.env.PORT || 3001;
 
 // Serve static frontend files from ../client
-app.use(express.static(path.join(__dirname, '../client')));
+const clientPath = path.join(__dirname, '../client');
 
-// For any unmatched route, serve index.html
+app.use(express.static(clientPath));
+
 app.get('/*', (req, res) => {
-  res.sendFile(path.resolve(__dirname, '../client/index.html'));
+  res.sendFile(path.join(clientPath, 'index.html'));
 });
-
-
 
 app.listen(PORT, () => console.log(`
 ✅ Server running at http://localhost:${PORT}
