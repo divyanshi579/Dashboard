@@ -75,7 +75,7 @@ app.post('/api/chat', async (req, res) => {
         headers: {
           'Authorization': `Bearer ${process.env.OPENROUTER_API_KEY}`,
           'Content-Type': 'application/json',
-          'HTTP-Referer': 'http://localhost:3000', // or your actual frontend URL
+          'HTTP-Referer': 'https://dashboard-8aas.onrender.com', // or your actual frontend URL
           'X-Title': 'ChatWidget'
         }
       }
