@@ -1,0 +1,1678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customizable Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.5s ease;
+            min-height: 100vh;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            color: white;
+        }
+
+        /* Theme Backgrounds */
+        .theme-forest {
+            background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
+                              url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80');
+        }
+
+        .theme-ocean {
+            background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
+                              url('https://images.unsplash.com/photo-1439066615861-d1af74d74000?ixlib=rb-4.0.3&auto=format&fit=crop&w=2071&q=80');
+        }
+
+        .theme-mountain {
+            background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
+                              url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+        }
+
+        .theme-night-sky {
+            background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                              url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=2013&q=80');
+        }
+
+        .theme-aurora {
+            background-image: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), 
+                              url('https://images.unsplash.com/photo-1531366936337-7c912a4589a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+        }
+
+        .theme-galaxy {
+            background-image: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.2)), 
+                              url('https://images.unsplash.com/photo-1502134249126-9f3755a50d78?ixlib=rb-4.0.3&auto=format&fit=crop&w=2070&q=80');
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .theme-toggle-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .theme-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Theme Selector Modal */
+        .theme-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .theme-modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .theme-selector {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(30px);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            max-width: 600px;
+            width: 90%;
+            position: relative;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: rotate(90deg);
+        }
+
+        .theme-selector h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .theme-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .theme-option {
+            border-radius: 15px;
+            height: 100px;
+            background-size: cover;
+            background-position: center;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .theme-option:hover {
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .theme-option.active {
+            border-color: #4ecdc4;
+            box-shadow: 0 0 20px rgba(78, 205, 196, 0.5);
+        }
+
+        .theme-option::after {
+            content: attr(data-name);
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 0.5rem;
+            text-align: center;
+            font-size: 0.8rem;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .theme-option:hover::after {
+            transform: translateY(0);
+        }
+
+        /* Dashboard Content */
+        .dashboard {
+            padding: 2rem;
+            min-height: calc(100vh - 80px);
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .welcome-section h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .welcome-section p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Widget Grid */
+        .widget-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .widget {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            min-height: 250px;
+        }
+
+        .widget:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .widget h3 {
+            margin-bottom: 1rem;
+            color: #4ecdc4;
+        }
+
+        /* Widget Specific Styles */
+        .todo-input, .fitness-input, .timer-input, .note-input {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .todo-input input, .fitness-input input, .timer-input input, .note-input input {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.9rem;
+        }
+
+        .todo-input input::placeholder, .fitness-input input::placeholder, 
+        .timer-input input::placeholder, .note-input input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .todo-input button, .fitness-input button, .note-input button {
+            background: #4ecdc4;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .todo-input button:hover, .fitness-input button:hover, .note-input button:hover {
+            background: #45b7b8;
+            transform: scale(1.05);
+        }
+
+        .todo-list, .exercise-list, .notes-list {
+            list-style: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .todo-item, .exercise-item, .note-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .todo-item:hover, .exercise-item:hover, .note-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .todo-item.completed {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+
+        .exercise-item.completed {
+            opacity: 0.6;
+            background: rgba(78, 205, 196, 0.2);
+        }
+
+        .todo-item button, .exercise-item button, .note-item button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.25rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            margin-left: 0.25rem;
+        }
+
+        .todo-item button:hover, .exercise-item button:hover, .note-item button:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .quote-container {
+            text-align: center;
+        }
+
+        .quote-text {
+            font-style: italic;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            min-height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quote-author {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 1rem;
+        }
+
+        .quote-refresh {
+            background: #ff6b6b;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .quote-refresh:hover {
+            background: #ff5252;
+            transform: scale(1.05);
+        }
+
+        .timer-display {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        #timerDisplay, #stopwatchDisplay {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: #4ecdc4;
+            text-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .timer-controls button {
+            background: #ff6b6b;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .timer-controls button:hover {
+            transform: scale(1.05);
+        }
+
+        .timer-controls button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #stopSoundBtn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        
+        #stopSoundBtn:hover {
+            background-color: #b02a37;
+        }
+
+
+        .exercise-time {
+            font-size: 0.8rem;
+            color: #4ecdc4;
+            margin-left: 0.5rem;
+        }
+
+        .lap-times {
+            margin-top: 1rem;
+            max-height: 100px;
+            overflow-y: auto;
+        }
+
+        .lap-time {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem;
+            margin-bottom: 0.25rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Weather Widget */
+        .weather-info {
+            text-align: center;
+        }
+
+        .weather-temp {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #4ecdc4;
+            margin-bottom: 0.5rem;
+        }
+
+        .weather-desc {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            text-transform: capitalize;
+        }
+
+        .weather-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .weather-input {
+            margin-bottom: 1rem;
+        }
+
+        .weather-input input {
+            width: 70%;
+            padding: 0.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: white;
+            margin-right: 0.5rem;
+        }
+
+        .weather-input button {
+            background: #4ecdc4;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Study Focus Widget */
+        .focus-modes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .focus-mode {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .focus-mode:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .focus-mode.active {
+            border-color: #4ecdc4;
+            background: rgba(78, 205, 196, 0.2);
+        }
+
+        .focus-status {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-top: 1rem;
+            color: #4ecdc4;
+        }
+
+        
+        #stopMusicBtn {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        #stopMusicBtn:hover {
+            background-color: #b02a37;
+        }
+
+        /* Music & Movie Recommendations */
+        .mood-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .mood-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+        }
+
+        .mood-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .mood-btn.active {
+            border-color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.2);
+        }
+
+        .recommendations {
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .recommendation-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            border-radius: 5px;
+            font-size: 0.9rem;
+        }
+            
+                /* Add to your existing CSS */
+        .chat-container {
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 0.75rem;
+        }
+
+        .chat-message {
+            margin-bottom: 0.75rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .user-message {
+            background: rgba(78, 205, 196, 0.2);
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+
+        .ai-message {
+            background: rgba(255, 255, 255, 0.1);
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 0.75rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            color: white;
+        }
+
+        .chat-input button {
+            background: #4ecdc4;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .chat-input button:hover {
+            background: #45b7b8;
+            transform: scale(1.1);
+        }
+
+        .message-row {
+          display: flex;
+          align-items: flex-start;
+          margin-bottom: 1rem;
+        }
+
+        .message-avatar {
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          margin: 0 10px;
+          background-color: #ccc;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: bold;
+          color: white;
+        }
+
+        .user-avatar {
+          background-color: #4ecdc4;
+          order: 2;
+        }
+
+        .ai-avatar {
+          background-color: #f67280;
+          order: 0;
+        }
+
+        .user-message {
+          order: 1;
+        }
+
+        .ai-message {
+          order: 1;
+        }
+
+
+                /* Animation */
+                @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .widget {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header {
+                padding: 1rem;
+            }
+            
+            .welcome-section h1 {
+                font-size: 2rem;
+            }
+            
+            .theme-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .widget-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timer-controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body class="theme-forest">
+    <script src="config.js"></script>
+    <header class="header">
+        <div class="logo">✨ Dashboard</div>
+        <button class="theme-toggle-btn" onclick="openThemeModal()">🎨 Change Theme</button>
+    </header>
+
+    <div class="theme-modal" id="themeModal">
+        <div class="theme-selector">
+            <button class="close-btn" onclick="closeThemeModal()">×</button>
+            <h2>Choose Your Theme</h2>
+            <div class="theme-grid">
+                <div class="theme-option active" 
+                     data-theme="forest" 
+                     data-name="Enchanted Forest"
+                     style="background-image: url('https://images.unsplash.com/photo-1441974231531-c6227db76b6e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80')"
+                     onclick="changeTheme('forest')"></div>
+                
+                <div class="theme-option" 
+                     data-theme="ocean" 
+                     data-name="Ocean Waves"
+                     style="background-image: url('https://images.unsplash.com/photo-1439066615861-d1af74d74000?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80')"
+                     onclick="changeTheme('ocean')"></div>
+                
+                <div class="theme-option" 
+                     data-theme="mountain" 
+                     data-name="Mountain Peak"
+                     style="background-image: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80')"
+                     onclick="changeTheme('mountain')"></div>
+                
+                <div class="theme-option" 
+                     data-theme="night-sky" 
+                     data-name="Starry Night"
+                     style="background-image: url('https://images.unsplash.com/photo-1419242902214-272b3f66ee7a?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80')"
+                     onclick="changeTheme('night-sky')"></div>
+                
+                <div class="theme-option" 
+                     data-theme="aurora" 
+                     data-name="Aurora Borealis"
+                     style="background-image: url('https://images.unsplash.com/photo-1531366936337-7c912a4589a7?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80')"
+                     onclick="changeTheme('aurora')"></div>
+                
+                <div class="theme-option" 
+                     data-theme="galaxy" 
+                     data-name="Deep Galaxy"
+                     style="background-image: url('https://images.unsplash.com/photo-1502134249126-9f3755a50d78?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80')"
+                     onclick="changeTheme('galaxy')"></div>
+            </div>
+        </div>
+    </div>
+
+    <main class="dashboard">
+        <section class="welcome-section">
+            <h1>Welcome to Your Dashboard</h1>
+            <p>Customize your experience with beautiful themes that adapt to your mood</p>
+        </section>
+
+        <div class="widget-grid" id="widgetGrid">
+            <!-- To-Do List Widget -->
+            <div class="widget">
+                <h3>✅ To-Do List</h3>
+                <div class="todo-input">
+                    <input type="text" id="todoInput" placeholder="Add a new task..." onkeypress="handleTodoEnter(event)">
+                    <button onclick="addTodo()">+</button>
+                </div>
+                <ul id="todoList" class="todo-list"></ul>
+            </div>
+            
+            <!-- Notes Widget -->
+            <div class="widget">
+                <h3>📝 Notes</h3>
+                <div class="note-input">
+                    <input type="text" id="noteInput" placeholder="Add a new note..." onkeypress="handleNoteEnter(event)">
+                    <button onclick="addNote()">+</button>
+                </div>
+                <ul id="notesList" class="notes-list"></ul>
+            </div>
+            
+            <!-- Quote Widget -->
+            <div class="widget">
+                <h3>💭 Daily Quote</h3>
+                <div class="quote-container">
+                    <p id="quoteText" class="quote-text"></p>
+                    <p id="quoteAuthor" class="quote-author"></p>
+                    <button class="quote-refresh" onclick="getNewQuote()">🔄 New Quote</button>
+                </div>
+            </div>
+
+            <!-- Fitness Plan Widget -->
+            <div class="widget">
+                <h3>💪 Fitness Plan</h3>
+                <div class="fitness-input">
+                    <input type="text" id="exerciseInput" placeholder="Exercise name...">
+                    <input type="number" id="timeInput" placeholder="Minutes" min="1" max="999">
+                    <button onclick="addExercise()">+</button>
+                </div>
+                <ul id="exerciseList" class="exercise-list"></ul>
+            </div>
+
+            <!-- Timer Widget -->
+            <div class="widget">
+                <h3>⏱️ Timer</h3>
+                <div class="timer-display">
+                    <span id="timerDisplay">00:00</span>
+                </div>
+                <div class="timer-input">
+                    <input type="number" id="timerMinutes" placeholder="Minutes" min="1" max="999" value="5">
+                    <input type="number" id="timerSeconds" placeholder="Seconds" min="0" max="59" value="0">
+                    <audio id="alarmSound" src="birds.mp3" preload="auto"></audio>
+                    <button id="stopSoundBtn" onclick="stopAlarmSound()" style="display: none; margin-top: 10px;">
+                    🔇 Stop Alarm
+                    </button>
+                </div>
+                <div class="timer-controls">
+                    <button id="startBtn" onclick="startTimer()">▶️ Start</button>
+                    <button id="pauseBtn" onclick="pauseTimer()">⏸️ Pause</button>
+                    <button id="resetBtn" onclick="resetTimer()">🔄 Reset</button>
+                </div>
+            </div>
+
+            <!-- Stopwatch Widget -->
+            <div class="widget">
+                <h3>⏱️ Stopwatch</h3>
+                <div class="timer-display">
+                    <span id="stopwatchDisplay">00:00:00</span>
+                </div>
+                <div class="timer-controls">
+                    <button id="stopwatchStartBtn" onclick="startStopwatch()">▶️ Start</button>
+                    <button id="stopwatchPauseBtn" onclick="pauseStopwatch()">⏸️ Pause</button>
+                    <button id="stopwatchResetBtn" onclick="resetStopwatch()">🔄 Reset</button>
+                    <button id="stopwatchLapBtn" onclick="addLap()">🏁 Lap</button>
+                </div>
+                <div id="lapTimes" class="lap-times"></div>
+            </div>
+
+            <!-- Weather Widget -->
+            <div class="widget">
+                <h3>🌤️ Weather</h3>
+                <div class="weather-input">
+                    <input type="text" id="cityInput" placeholder="Enter city name..." value="London">
+                    <button onclick="getWeather()">Get Weather</button>
+                </div>
+                <div class="weather-info" id="weatherInfo">
+                    <p>Enter a city name to get weather information</p>
+                </div>
+            </div>
+
+            <!-- Study Focus Widget -->
+            <!-- Study Focus Widget -->
+            <div class="widget">
+                <h3>📚 Study Focus</h3>
+            
+                <div class="focus-modes">
+                    <button class="focus-mode" onclick="setFocusMode('deep', this)">🎯 Deep Focus</button>
+                    <button class="focus-mode" onclick="setFocusMode('light', this)">💡 Light Study</button>
+                    <button class="focus-mode" onclick="setFocusMode('creative', this)">🎨 Creative</button>
+                    <button class="focus-mode" onclick="setFocusMode('break', this)">☕ Break Time</button>
+                </div>
+            
+                <div class="focus-status" id="focusStatus">Select a study mode</div>
+            
+                <audio id="focusMusic" preload="auto"></audio>
+                <button id="stopMusicBtn" onclick="stopMusic()" style="display: none; margin-top: 10px;">
+                    🔇 Stop Music
+                </button>
+            </div>
+
+
+            <!-- Music Recommendations Widget -->
+            <div class="widget">
+                <h3>🎵 Music Recommendations</h3>
+                <div class="mood-selector">
+                    <button class="mood-btn" onclick="getMusicRecommendations('happy')">😊 Happy</button>
+                    <button class="mood-btn" onclick="getMusicRecommendations('chill')">😌 Chill</button>
+                    <button class="mood-btn" onclick="getMusicRecommendations('focus')">🎯 Focus</button>
+                    <button class="mood-btn" onclick="getMusicRecommendations('sad')">😢 Sad</button>
+                    <button class="mood-btn" onclick="getMusicRecommendations('energetic')">⚡ Energetic</button>
+                    <button class="mood-btn" onclick="getMusicRecommendations('romantic')">💕 Romantic</button>
+                </div>
+                <div class="recommendations" id="musicRecommendations">
+                    <p>Select a mood to get music recommendations</p>
+                </div>
+            </div>
+
+            <!-- Movie Recommendations Widget -->
+            <div class="widget">
+                <h3>🎬 Movie Recommendations</h3>
+                <div class="mood-selector">
+                    <button class="mood-btn" onclick="getMovieRecommendations('action')">💥 Action</button>
+                    <button class="mood-btn" onclick="getMovieRecommendations('comedy')">😂 Comedy</button>
+                    <button class="mood-btn" onclick="getMovieRecommendations('romance')">💕 Romance</button>
+                    <button class="mood-btn" onclick="getMovieRecommendations('thriller')">😰 Thriller</button>
+                    <button class="mood-btn" onclick="getMovieRecommendations('drama')">🎭 Drama</button>
+                    <button class="mood-btn" onclick="getMovieRecommendations('scifi')">🚀 Sci-Fi</button>
+                </div>
+                <div class="recommendations" id="movieRecommendations">
+                    <p>Select a genre to get movie recommendations</p>
+                </div>
+            </div>
+
+            <!-- Add this widget to your widget-grid section -->
+            <div class="widget">
+                <h3>🤖 AI Assistant</h3>
+                <div class="chat-container">
+                    <div id="chatBox" class="chat-messages"></div>
+                    <div class="chat-input">
+                        <input type="text" id="userInput" placeholder="Ask me anything..." onkeypress="handleChatEnter(event)">
+                        <button onclick="sendMessage()">➤</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <script>
+        let currentTheme = 'forest';
+        let timerInterval = null;
+        let timerTime = 0;
+        let isTimerRunning = false;
+
+        // Inspirational quotes array
+        const quotes = [
+            { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+            { text: "Innovation distinguishes between a leader and a follower.", author: "Steve Jobs" },
+            { text: "Life is what happens to you while you're busy making other plans.", author: "John Lennon" },
+            { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+            { text: "It is during our darkest moments that we must focus to see the light.", author: "Aristotle" },
+            { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
+            { text: "The only impossible journey is the one you never begin.", author: "Tony Robbins" },
+            { text: "In the middle of difficulty lies opportunity.", author: "Albert Einstein" },
+            { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+            { text: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb" },
+            { text: "Your limitation—it's only your imagination.", author: "Unknown" },
+            { text: "Push yourself, because no one else is going to do it for you.", author: "Unknown" },
+            { text: "Great things never come from comfort zones.", author: "Unknown" },
+            { text: "Dream it. Wish it. Do it.", author: "Unknown" },
+            { text: "Success doesn't just find you. You have to go out and get it.", author: "Unknown" }
+        ];
+
+        // Load saved data and initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = getCurrentTheme();
+            if (savedTheme) {
+                changeTheme(savedTheme, false);
+            }
+            loadTodos();
+            loadNotes();
+            loadExercises();
+            displayDailyQuote();
+        });
+
+        // Theme Functions
+        function openThemeModal() {
+            document.getElementById('themeModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeThemeModal() {
+            document.getElementById('themeModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        function changeTheme(theme, save = true) {
+            document.body.classList.remove('theme-forest', 'theme-ocean', 'theme-mountain', 
+                                         'theme-night-sky', 'theme-aurora', 'theme-galaxy');
+            document.body.classList.add(`theme-${theme}`);
+            
+            document.querySelectorAll('.theme-option').forEach(option => {
+                option.classList.remove('active');
+            });
+            document.querySelector(`[data-theme="${theme}"]`).classList.add('active');
+            
+            currentTheme = theme;
+            if (save) saveTheme(theme);
+            closeThemeModal();
+        }
+
+        function saveTheme(theme) {
+            window.dashboardTheme = theme;
+        }
+
+        function getCurrentTheme() {
+            return window.dashboardTheme || 'forest';
+        }
+
+        // To-Do List Functions
+        function handleTodoEnter(event) {
+            if (event.key === 'Enter') {
+                addTodo();
+            }
+        }
+
+        function addTodo() {
+            const input = document.getElementById('todoInput');
+            const text = input.value.trim();
+            if (!text) return;
+
+            const todoList = document.getElementById('todoList');
+            const li = document.createElement('li');
+            li.className = 'todo-item';
+            li.innerHTML = `
+                <span>${text}</span>
+                <div>
+                    <button onclick="toggleTodo(this)" title="Mark as done">✓</button>
+                    <button onclick="deleteTodo(this)" title="Delete">🗑️</button>
+                </div>
+            `;
+            todoList.appendChild(li);
+            input.value = '';
+            saveTodos();
+        }
+
+        function toggleTodo(button) {
+            const todoItem = button.closest('.todo-item');
+            todoItem.classList.toggle('completed');
+            saveTodos();
+        }
+
+        function deleteTodo(button) {
+            const todoItem = button.closest('.todo-item');
+            todoItem.remove();
+            saveTodos();
+        }
+
+        function saveTodos() {
+            const todos = [];
+            document.querySelectorAll('.todo-item').forEach(item => {
+                todos.push({
+                    text: item.querySelector('span').textContent,
+                    completed: item.classList.contains('completed')
+                });
+            });
+            window.dashboardTodos = todos;
+        }
+
+        function loadTodos() {
+            const todos = window.dashboardTodos || [];
+            const todoList = document.getElementById('todoList');
+            todoList.innerHTML = '';
+            
+            todos.forEach(todo => {
+                const li = document.createElement('li');
+                li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+                li.innerHTML = `
+                    <span>${todo.text}</span>
+                    <div>
+                        <button onclick="toggleTodo(this)" title="Mark as done">✓</button>
+                        <button onclick="deleteTodo(this)" title="Delete">🗑️</button>
+                    </div>
+                `;
+                todoList.appendChild(li);
+            });
+        }
+
+        // Notes Functions
+        function saveNotes() {
+            const notes = document.getElementById('notesArea').value;
+            window.dashboardNotes = notes;
+        }
+
+        function loadNotes() {
+            const notes = window.dashboardNotes || '';
+            document.getElementById('notesArea').value = notes;
+        }
+
+        // Quote Functions
+        function displayDailyQuote() {
+            const today = new Date();
+            const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+            const quoteIndex = dayOfYear % quotes.length;
+            const dailyQuote = quotes[quoteIndex];
+            
+            document.getElementById('quoteText').textContent = `"${dailyQuote.text}"`;
+            document.getElementById('quoteAuthor').textContent = `— ${dailyQuote.author}`;
+        }
+
+        function getNewQuote() {
+            const randomIndex = Math.floor(Math.random() * quotes.length);
+            const quote = quotes[randomIndex];
+            
+            document.getElementById('quoteText').textContent = `"${quote.text}"`;
+            document.getElementById('quoteAuthor').textContent = `— ${quote.author}`;
+        }
+
+        // Fitness Plan Functions
+        function addExercise() {
+            const nameInput = document.getElementById('exerciseInput');
+            const timeInput = document.getElementById('timeInput');
+            const name = nameInput.value.trim();
+            const time = parseInt(timeInput.value);
+            
+            if (!name || !time) return;
+
+            const exerciseList = document.getElementById('exerciseList');
+            const li = document.createElement('li');
+            li.className = 'exercise-item';
+            li.innerHTML = `
+                <span>${name} <span class="exercise-time">${time} min</span></span>
+                <div>
+                    <button onclick="toggleExercise(this)" title="Mark as completed">✓</button>
+                    <button onclick="deleteExercise(this)" title="Delete">🗑️</button>
+                </div>
+            `;
+            exerciseList.appendChild(li);
+            nameInput.value = '';
+            timeInput.value = '';
+            saveExercises();
+        }
+
+        function toggleExercise(button) {
+            const exerciseItem = button.closest('.exercise-item');
+            exerciseItem.classList.toggle('completed');
+            saveExercises();
+        }
+
+        function deleteExercise(button) {
+            const exerciseItem = button.closest('.exercise-item');
+            exerciseItem.remove();
+            saveExercises();
+        }
+
+        function saveExercises() {
+            const exercises = [];
+            document.querySelectorAll('.exercise-item').forEach(item => {
+                const span = item.querySelector('span');
+                const text = span.childNodes[0].textContent;
+                const time = span.querySelector('.exercise-time').textContent;
+                exercises.push({
+                    name: text,
+                    time: time,
+                    completed: item.classList.contains('completed')
+                });
+            });
+            window.dashboardExercises = exercises;
+        }
+
+        function loadExercises() {
+            const exercises = window.dashboardExercises || [];
+            const exerciseList = document.getElementById('exerciseList');
+            exerciseList.innerHTML = '';
+            
+            exercises.forEach(exercise => {
+                const li = document.createElement('li');
+                li.className = `exercise-item ${exercise.completed ? 'completed' : ''}`;
+                li.innerHTML = `
+                    <span>${exercise.name} <span class="exercise-time">${exercise.time}</span></span>
+                    <div>
+                        <button onclick="toggleExercise(this)" title="Mark as completed">✓</button>
+                        <button onclick="deleteExercise(this)" title="Delete">🗑️</button>
+                    </div>
+                `;
+                exerciseList.appendChild(li);
+            });
+        }
+
+        // Timer Functions
+        function startTimer() {
+            if (!isTimerRunning) {
+                const minutes = parseInt(document.getElementById('timerMinutes').value) || 0;
+                const seconds = parseInt(document.getElementById('timerSeconds').value) || 0;
+                timerTime = (minutes * 60) + seconds;
+            }
+            
+            if (timerTime <= 0) return;
+            
+            isTimerRunning = true;
+            document.getElementById('startBtn').disabled = true;
+            document.getElementById('pauseBtn').disabled = false;
+            
+            timerInterval = setInterval(() => {
+                timerTime--;
+                updateTimerDisplay();
+                
+                if (timerTime <= 0) {
+                    clearInterval(timerInterval);
+                    isTimerRunning = false;
+                    document.getElementById('startBtn').disabled = false;
+                    document.getElementById('pauseBtn').disabled = true;
+                    document.getElementById('alarmSound').play();
+                    document.getElementById('stopSoundBtn').style.display = 'inline-block';
+                    alert('⏰ Timer finished!');
+
+
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = true;
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            isTimerRunning = false;
+            timerTime = 0;
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('pauseBtn').disabled = true;
+            updateTimerDisplay();
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timerTime / 60);
+            const seconds = timerTime % 60;
+            document.getElementById('timerDisplay').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        function stopAlarmSound() {
+            const alarm = document.getElementById('alarmSound');
+            alarm.pause();
+            alarm.currentTime = 0;
+            document.getElementById('stopSoundBtn').style.display = 'none'; // Hide button again
+        }
+
+
+        // Stopwatch Variables
+        let stopwatchInterval = null;
+        let stopwatchTime = 0;
+        let isStopwatchRunning = false;
+        let lapCounter = 1;
+            
+        // Stopwatch Functions
+        function startStopwatch() {
+            if (!isStopwatchRunning) {
+                isStopwatchRunning = true;
+                document.getElementById('stopwatchStartBtn').disabled = true;
+                document.getElementById('stopwatchPauseBtn').disabled = false;
+                document.getElementById('stopwatchLapBtn').disabled = false;
+                
+                stopwatchInterval = setInterval(() => {
+                    stopwatchTime++;
+                    updateStopwatchDisplay();
+                }, 10); // 10ms for centisecond precision
+            }
+        }
+        
+        function pauseStopwatch() {
+            clearInterval(stopwatchInterval);
+            isStopwatchRunning = false;
+            document.getElementById('stopwatchStartBtn').disabled = false;
+            document.getElementById('stopwatchPauseBtn').disabled = true;
+            document.getElementById('stopwatchLapBtn').disabled = true;
+        }
+        
+        function resetStopwatch() {
+            clearInterval(stopwatchInterval);
+            isStopwatchRunning = false;
+            stopwatchTime = 0;
+            lapCounter = 1;
+            document.getElementById('stopwatchStartBtn').disabled = false;
+            document.getElementById('stopwatchPauseBtn').disabled = true;
+            document.getElementById('stopwatchLapBtn').disabled = true;
+            document.getElementById('lapTimes').innerHTML = '';
+            updateStopwatchDisplay();
+        }
+        
+        function updateStopwatchDisplay() {
+            const centiseconds = stopwatchTime % 100;
+            const seconds = Math.floor(stopwatchTime / 100) % 60;
+            const minutes = Math.floor(stopwatchTime / 6000);
+            
+            document.getElementById('stopwatchDisplay').textContent = 
+                `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${centiseconds.toString().padStart(2, '0')}`;
+        }
+        
+        function addLap() {
+            if (isStopwatchRunning) {
+                const lapTimes = document.getElementById('lapTimes');
+                const lapDiv = document.createElement('div');
+                lapDiv.className = 'lap-time';
+                
+                const centiseconds = stopwatchTime % 100;
+                const seconds = Math.floor(stopwatchTime / 100) % 60;
+                const minutes = Math.floor(stopwatchTime / 6000);
+                const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${centiseconds.toString().padStart(2, '0')}`;
+                
+                lapDiv.innerHTML = `<span>Lap ${lapCounter}</span><span>${timeString}</span>`;
+                lapTimes.appendChild(lapDiv);
+                lapCounter++;
+                    }
+                }
+            
+                // Notes Functions
+        function handleNoteEnter(event) {
+            if (event.key === 'Enter') {
+                addNote();
+            }
+        }
+
+        function addNote() {
+            const input = document.getElementById('noteInput');
+            const text = input.value.trim();
+            if (!text) return;
+        
+            const notesList = document.getElementById('notesList');
+            const li = document.createElement('li');
+            li.className = 'note-item';
+            li.innerHTML = `
+                <span>${text}</span>
+                <button onclick="deleteNote(this)" title="Delete">🗑️</button>
+            `;
+            notesList.appendChild(li);
+            input.value = '';
+            saveNotes();
+        }
+
+        function deleteNote(button) {
+            const noteItem = button.closest('.note-item');
+            noteItem.remove();
+            saveNotes();
+        }
+
+        function saveNotes() {
+            const notes = [];
+            document.querySelectorAll('.note-item').forEach(item => {
+                notes.push(item.querySelector('span').textContent);
+            });
+            window.dashboardNotesArray = notes;
+        }
+
+        function loadNotes() {
+            const notes = window.dashboardNotesArray || [];
+            const notesList = document.getElementById('notesList');
+            notesList.innerHTML = '';
+
+            notes.forEach(noteText => {
+                const li = document.createElement('li');
+                li.className = 'note-item';
+                li.innerHTML = `
+                    <span>${noteText}</span>
+                    <button onclick="deleteNote(this)" title="Delete">🗑️</button>
+                `;
+                notesList.appendChild(li);
+            });
+        }
+
+        //WEATHER-WIDGET
+        async function getWeather() {
+        const city = document.getElementById('cityInput').value || "London";
+        const weatherInfo = document.getElementById('weatherInfo');
+
+        weatherInfo.innerHTML = '<p>Loading weather...</p>';
+
+        try {
+          const response = await fetch(`http://localhost:3001/api/weather?city=${city}`);
+          if (!response.ok) throw new Error('City not found. Please enter a valid city.');
+        
+          const data = await response.json();
+        
+          weatherInfo.innerHTML = `
+            <h3>${data.city}, ${data.country}</h3>
+            <img src="https://openweathermap.org/img/wn/${data.icon}@2x.png" alt="${data.description}">
+            <div class="weather-temp">${Math.round(data.temp)}°C (${data.description})</div>
+            <div class="weather-details">
+              <div>Feels like: ${Math.round(data.feels_like)}°C</div>
+              <div>Humidity: ${data.humidity}%</div>
+              <div>Pressure: ${data.pressure} hPa</div>
+              <div>Wind: ${data.wind_speed} m/s, ${data.wind_deg}°</div>
+            </div>
+          `;
+        } catch (error) {
+          weatherInfo.innerHTML = ` 
+            <p>⚠️ ${error.message}</p>
+          `;
+          const errorMsg = data.details || "City not found. Please try another.";
+          weatherInfo.innerHTML = `<p>⚠️ ${errorMsg}</p>`;
+
+        }
+        }
+        
+        // Study Focus Functions
+        let currentFocusMode = null;
+        const musicMap = {
+            'deep': 'deep.mp3',
+            'light': 'light.mp3',
+            'creative': 'creative.mp3',
+            'break': 'break.mp3'
+        };
+        
+        function setFocusMode(mode, button) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.focus-mode').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        
+            const focusStatus = document.getElementById('focusStatus');
+            const messages = {
+                'deep': '🎯 Deep Focus Mode: Eliminate distractions, focus on important tasks',
+                'light': '💡 Light Study Mode: Casual learning, take notes, review materials',
+                'creative': '🎨 Creative Mode: Brainstorm, ideate, let your imagination flow',
+                'break': '☕ Break Time: Relax, recharge, come back refreshed'
+            };
+        
+            currentFocusMode = mode;
+            focusStatus.textContent = messages[mode];
+        
+            playFocusMusic(musicMap[mode]);
+        }
+        
+        function playFocusMusic(src) {
+            const audio = document.getElementById('focusMusic');
+            audio.src = src;
+            audio.loop = true;
+            audio.play();
+            document.getElementById('stopMusicBtn').style.display = 'inline-block';
+        }
+        
+        function stopMusic() {
+            const audio = document.getElementById('focusMusic');
+            audio.pause();
+            audio.currentTime = 0;
+            document.getElementById('stopMusicBtn').style.display = 'none';
+        }
+
+
+        // Music Recommendations Functions
+        function getMusicRecommendations(mood) {
+            // Remove active class from all music mood buttons
+            const musicWidget = document.querySelector('#musicRecommendations').closest('.widget');
+            musicWidget.querySelectorAll('.mood-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to selected mood
+            event.target.classList.add('active');
+            
+            const musicRecommendations = {
+                'happy': [
+                    '🎵 "Happy" by Pharrell Williams',
+                    '🎵 "Good as Hell" by Lizzo',
+                    '🎵 "Can\'t Stop the Feeling" by Justin Timberlake',
+                    '🎵 "Walking on Sunshine" by Katrina & The Waves',
+                    '🎵 "Uptown Funk" by Bruno Mars'
+                ],
+                'chill': [
+                    '🎵 "Stay" by Rihanna',
+                    '🎵 "Lost in the Light" by Bahamas',
+                    '🎵 "Holocene" by Bon Iver',
+                    '🎵 "Breathe Me" by Sia',
+                    '🎵 "Mad World" by Gary Jules'
+                ],
+                'focus': [
+                    '🎵 Lofi Hip Hop Radio',
+                    '🎵 Brian Eno - Music for Airports',
+                    '🎵 Max Richter - Sleep',
+                    '🎵 Ólafur Arnalds - Re:member',
+                    '🎵 Ludovico Einaudi - Divenire'
+                ],
+                'sad': [
+                    '🎵 "Someone Like You" by Adele',
+                    '🎵 "Hurt" by Johnny Cash',
+                    '🎵 "Black" by Pearl Jam',
+                    '🎵 "Tears in Heaven" by Eric Clapton',
+                    '🎵 "Mad About You" by Sting'
+                ],
+                'energetic': [
+                    '🎵 "Eye of the Tiger" by Survivor',
+                    '🎵 "Pump It" by Black Eyed Peas',
+                    '🎵 "Thunder" by Imagine Dragons',
+                    '🎵 "Stronger" by Kanye West',
+                    '🎵 "Can\'t Hold Us" by Macklemore'
+                ],
+                'romantic': [
+                    '🎵 "Perfect" by Ed Sheeran',
+                    '🎵 "All of Me" by John Legend',
+                    '🎵 "Thinking Out Loud" by Ed Sheeran',
+                    '🎵 "Make You Feel My Love" by Bob Dylan',
+                    '🎵 "At Last" by Etta James'
+                ]
+            };
+            
+            const recommendations = document.getElementById('musicRecommendations');
+            recommendations.innerHTML = '';
+            
+            musicRecommendations[mood].forEach(song => {
+                const div = document.createElement('div');
+                div.className = 'recommendation-item';
+                div.textContent = song;
+                recommendations.appendChild(div);
+            });
+        }
+        
+        // Movie Recommendations Functions
+        function getMovieRecommendations(genre) {
+            // Remove active class from all movie mood buttons
+            const movieWidget = document.querySelector('#movieRecommendations').closest('.widget');
+            movieWidget.querySelectorAll('.mood-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to selected genre
+            event.target.classList.add('active');
+            
+            const movieRecommendations = {
+                'action': [
+                    '🎬 Mad Max: Fury Road (2015)',
+                    '🎬 John Wick (2014)',
+                    '🎬 The Dark Knight (2008)',
+                    '🎬 Mission: Impossible - Fallout (2018)',
+                    '🎬 Avengers: Endgame (2019)'
+                ],
+                'comedy': [
+                    '🎬 The Grand Budapest Hotel (2014)',
+                    '🎬 Superbad (2007)',
+                    '🎬 Knives Out (2019)',
+                    '🎬 The Nice Guys (2016)',
+                    '🎬 Parasite (2019)'
+                ],
+                'romance': [
+                    '🎬 The Notebook (2004)',
+                    '🎬 La La Land (2016)',
+                    '🎬 Before Sunset (2004)',
+                    '🎬 Her (2013)',
+                    '🎬 Eternal Sunshine of the Spotless Mind (2004)'
+                ],
+                'thriller': [
+                    '🎬 Gone Girl (2014)',
+                    '🎬 Zodiac (2007)',
+                    '🎬 No Country for Old Men (2007)',
+                    '🎬 Prisoners (2013)',
+                    '🎬 Shutter Island (2010)'
+                ],
+                'drama': [
+                    '🎬 The Shawshank Redemption (1994)',
+                    '🎬 12 Years a Slave (2013)',
+                    '🎬 Moonlight (2016)',
+                    '🎬 There Will Be Blood (2007)',
+                    '🎬 Manchester by the Sea (2016)'
+                ],
+                'scifi': [
+                    '🎬 Blade Runner 2049 (2017)',
+                    '🎬 Arrival (2016)',
+                    '🎬 Interstellar (2014)',
+                    '🎬 Ex Machina (2014)',
+                    '🎬 The Matrix (1999)'
+                ]
+            };
+            
+            const recommendations = document.getElementById('movieRecommendations');
+            recommendations.innerHTML = '';
+            
+            movieRecommendations[genre].forEach(movie => {
+                const div = document.createElement('div');
+                div.className = 'recommendation-item';
+                div.textContent = movie;
+                recommendations.appendChild(div);
+            });
+        }
+        //CHAT-WIDGET
+
+        let chatHistory = [];
+
+        // 👇 Handles Enter key to send message
+        function handleChatEnter(event) {
+          if (event.key === "Enter") {
+            sendMessage();
+          }
+        }
+    
+           // 👇 Adds message to chat UI and returns ID (for updating AI reply later)
+        function addChatMessage(content, sender) {
+          const chatBox = document.getElementById('chatBox');
+          const id = `msg-${Date.now()}`;
+                
+          // Create row
+          const row = document.createElement('div');
+          row.className = 'message-row';
+                
+          // Avatar
+          const avatar = document.createElement('div');
+          avatar.className = `message-avatar ${sender === 'user' ? 'user-avatar' : 'ai-avatar'}`;
+          avatar.innerText = sender === 'user' ? '🧑' : '🤖';
+                
+          // Message
+          const messageDiv = document.createElement('div');
+          messageDiv.className = `chat-message ${sender === 'user' ? 'user-message' : 'ai-message'}`;
+          messageDiv.id = id;
+          messageDiv.innerText = content;
+                
+          // Add to row based on sender
+          if (sender === 'user') {
+            row.appendChild(messageDiv);
+            row.appendChild(avatar);
+          } else {
+            row.appendChild(avatar);
+            row.appendChild(messageDiv);
+          }
+        
+          chatBox.appendChild(row);
+          chatBox.scrollTop = chatBox.scrollHeight;
+          return id;
+        }
+
+    
+           // 👇 Sends message to backend (/api/chat)
+        async function sendMessage() {
+          const userInput = document.getElementById('userInput');
+          const message = userInput.value.trim();
+          if (!message) return;
+    
+             // Add user message
+          addChatMessage(message, 'user');
+          chatHistory.push({ role: "user", content: message });
+          userInput.value = '';
+    
+             // Loading message
+          const loadingId = addChatMessage("Thinking...", 'ai');
+    
+             try {
+            const response = await fetch('http://localhost:3001/api/chat', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ messages: chatHistory })
+            });
+        
+               const data = await response.json();
+            document.getElementById(loadingId).innerHTML = data.content;
+            chatHistory.push(data);
+          } catch (error) {
+            document.getElementById(loadingId).innerHTML = "⚠️ AI service unavailable";
+            console.error("Chat error:", error);
+          }
+        }
+    
+        // Event Listeners
+        document.getElementById('themeModal').addEventListener('click', function(e) {
+            if (e.target === this) closeThemeModal();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeThemeModal();
+        });
+    </script>
+</body>
+</html>
+
+
